@@ -10,6 +10,7 @@ import org.junit.jupiter.api.TestInstance
 import org.mockito.Mockito
 import org.mockito.Mockito.anyDouble
 import stubCalc
+import kotlin.math.cos
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IntegrityTests {
@@ -123,18 +124,94 @@ class IntegrityTests {
     }
 
     @Test
-    fun `test full system`() {
+    fun `test full system with all stubs`() {
         val sysFun = SystemFunction()
         sysFun.sin = sinStub
         sysFun.cos = cosStub
+        sysFun.cos.sin = sinStub
         sysFun.tan = tanStub
+        sysFun.tan.cos = cosStub
+        sysFun.tan.sin = sinStub
         sysFun.cot = cotStub
+        sysFun.cot.cos = cosStub
+        sysFun.cot.sin = sinStub
         sysFun.csc = cscStub
+        sysFun.csc.sin = sinStub
         sysFun.ln = lnStub
         sysFun.log2 = logStub2
         sysFun.log3 = logStub3
         sysFun.log5 = logStub5
         sysFun.log10 = logStub10
+        sysFun.tabularVal.forEach { (key, value) ->
+            assertEquals(value, sysFun.calc(key), 0.01)
+        }
+    }
+
+    @Test
+    fun `test full system only with sin and cos stubs and logs`() {
+        val sysFun = SystemFunction()
+        sysFun.sin = sinStub
+        sysFun.cos = cosStub
+        sysFun.cot.sin = sinStub
+        sysFun.cot.cos = cosStub
+        sysFun.tan.sin = sinStub
+        sysFun.tan.cos = cosStub
+        sysFun.csc.sin = sinStub
+        sysFun.ln = lnStub
+        sysFun.log2 = logStub2
+        sysFun.log3 = logStub3
+        sysFun.log5 = logStub5
+        sysFun.log10 = logStub10
+        sysFun.tabularVal.forEach { (key, value) ->
+            assertEquals(value, sysFun.calc(key), 0.01)
+        }
+    }
+    @Test
+    fun `test full system only sin stub and logs`() {
+        val sysFun = SystemFunction()
+        sysFun.sin = sinStub
+        sysFun.cot.sin = sinStub
+        sysFun.tan.sin = sinStub
+        sysFun.csc.sin = sinStub
+        sysFun.ln = lnStub
+        sysFun.log2 = logStub2
+        sysFun.log3 = logStub3
+        sysFun.log5 = logStub5
+        sysFun.log10 = logStub10
+        sysFun.tabularVal.forEach { (key, value) ->
+            assertEquals(value, sysFun.calc(key), 0.01)
+        }
+    }
+
+    @Test
+    fun `test full system only logs`() {
+        val sysFun = SystemFunction()
+        sysFun.ln = lnStub
+        sysFun.log2 = logStub2
+        sysFun.log3 = logStub3
+        sysFun.log5 = logStub5
+        sysFun.log10 = logStub10
+        sysFun.tabularVal.forEach { (key, value) ->
+            assertEquals(value, sysFun.calc(key), 0.01)
+        }
+    }
+
+    @Test
+    fun `test full system only ln stubs`() {
+        val sysFun = SystemFunction()
+        sysFun.ln = lnStub
+        sysFun.log2.ln = lnStub
+        sysFun.log3.ln = lnStub
+        sysFun.log5.ln = lnStub
+        sysFun.log10.ln = lnStub
+        sysFun.tabularVal.forEach { (key, value) ->
+            assertEquals(value, sysFun.calc(key), 0.01)
+        }
+    }
+
+    @Test
+    fun `test full`() {
+        val sysFun = SystemFunction()
         sysFun.tabularVal.forEach { (key, value) ->
             assertEquals(value, sysFun.calc(key), 0.01)
         }
